@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>สอบถามห้องพัก - มีทอง เรสซิเด้นท์</title>
+    <!-- นำเข้า LIFF SDK -->
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -17,6 +19,12 @@
     </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-4">
+
+    <!-- Loading Overlay -->
+    <div id="loading" class="fixed inset-0 bg-white z-[60] flex flex-col items-center justify-center p-6 text-center">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
+        <p class="text-gray-500 text-sm">กำลังเชื่อมต่อกับระบบ LINE...</p>
+    </div>
 
     <div class="max-w-md w-full bg-white rounded-[2.5rem] shadow-2xl overflow-hidden border border-gray-100 flex flex-col">
         <!-- Header -->
@@ -45,7 +53,7 @@
                     </div>
                     <div class="space-y-2">
                         <label class="text-sm font-medium text-gray-600 ml-1">1. สถานที่ทำงานของลูกค้าอยู่บริเวณไหนคะ?</label>
-                        <textarea name="workplace" rows="3" placeholder="ระบุชื่อบริษัท หรือ ย่านที่ทำงาน..." class="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:border-blue-500 transition"></textarea>
+                        <textarea id="workplace" name="workplace" rows="3" placeholder="ระบุชื่อบริษัท หรือ ย่านที่ทำงาน..." class="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:border-blue-500 transition"></textarea>
                     </div>
                     <button type="button" onclick="goStep(2)" class="w-full py-4 bg-blue-600 text-white rounded-2xl font-bold shadow-lg hover:bg-blue-700 active:scale-95 transition">ถัดไป</button>
                 </div>
@@ -60,11 +68,11 @@
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <label class="text-xs font-bold text-gray-400 uppercase ml-1">จำนวนผู้ใหญ่</label>
-                                <input type="number" name="adults" placeholder="เช่น 1 หรือ 2" class="w-full p-4 bg-gray-50 border rounded-2xl outline-none focus:border-blue-500">
+                                <input type="number" id="adults" name="adults" placeholder="เช่น 1 หรือ 2" class="w-full p-4 bg-gray-50 border rounded-2xl outline-none focus:border-blue-500">
                             </div>
                             <div>
                                 <label class="text-xs font-bold text-gray-400 uppercase ml-1">มีเด็กเล็กไหมคะ</label>
-                                <select name="children" class="w-full p-4 bg-gray-50 border rounded-2xl outline-none focus:border-blue-500">
+                                <select id="children" name="children" class="w-full p-4 bg-gray-50 border rounded-2xl outline-none focus:border-blue-500">
                                     <option value="ไม่มี">ไม่มีค่ะ</option>
                                     <option value="มี">มีค่ะ</option>
                                 </select>
@@ -72,7 +80,7 @@
                         </div>
                         <div>
                             <label class="text-xs font-bold text-gray-400 uppercase ml-1">ช่วงอายุผู้พัก</label>
-                            <input type="text" name="ageRange" placeholder="เช่น 25 - 30 ปี" class="w-full p-4 bg-gray-50 border rounded-2xl outline-none focus:border-blue-500">
+                            <input type="text" id="ageRange" name="ageRange" placeholder="เช่น 25 - 30 ปี" class="w-full p-4 bg-gray-50 border rounded-2xl outline-none focus:border-blue-500">
                         </div>
                     </div>
                     <div class="flex gap-3">
@@ -107,8 +115,12 @@
                         <div id="vaccineSection" class="hidden space-y-3 bg-blue-50 p-4 rounded-2xl border border-blue-100">
                             <label class="text-xs font-bold text-blue-600 uppercase">น้องได้รับวัคซีนครบถ้วนแล้วใช่ไหมคะ?</label>
                             <div class="flex gap-4">
-                                <label class="flex items-center gap-2 text-sm"><input type="radio" name="vaccine" value="ครบ"> ครบแล้วค่ะ</label>
-                                <label class="flex items-center gap-2 text-sm"><input type="radio" name="vaccine" value="ยังไม่ครบ"> ยังไม่ครบค่ะ</label>
+                                <label class="flex items-center gap-2 text-sm">
+                                    <input type="radio" name="vaccine" value="ครบแล้วค่ะ" checked> ครบแล้วค่ะ
+                                </label>
+                                <label class="flex items-center gap-2 text-sm">
+                                    <input type="radio" name="vaccine" value="ยังไม่ครบค่ะ"> ยังไม่ครบค่ะ
+                                </label>
                             </div>
                         </div>
                     </div>
@@ -126,7 +138,7 @@
                     <div class="space-y-4">
                         <div>
                             <label class="text-xs font-bold text-gray-400 uppercase ml-1">วางแผนจะย้ายเข้าช่วงวันไหนคะ?</label>
-                            <input type="date" name="moveInDate" class="w-full p-4 bg-gray-50 border rounded-2xl outline-none focus:border-blue-500">
+                            <input type="date" id="moveInDate" name="moveInDate" class="w-full p-4 bg-gray-50 border rounded-2xl outline-none focus:border-blue-500">
                         </div>
                         <div class="bg-red-50 p-4 rounded-2xl border border-red-100">
                             <p class="text-xs text-red-600 leading-relaxed">
@@ -136,7 +148,7 @@
                         </div>
                     </div>
                     <div class="flex flex-col gap-3">
-                        <button type="button" onclick="sendToLine()" class="w-full py-4 bg-green-600 text-white rounded-2xl font-bold shadow-lg flex items-center justify-center gap-2 active:scale-95 transition">
+                        <button type="button" id="btnSubmit" onclick="sendToLine()" class="w-full py-4 bg-green-600 text-white rounded-2xl font-bold shadow-lg flex items-center justify-center gap-2 active:scale-95 transition">
                             <i class="fa-brands fa-line text-xl"></i> ส่งข้อมูลให้แอดมิน
                         </button>
                         <button type="button" onclick="goStep(3)" class="w-full py-2 text-gray-400 text-sm">ย้อนกลับ</button>
@@ -147,7 +159,7 @@
         </div>
     </div>
 
-    <!-- Success Feedback Overlay (Hidden by default) -->
+    <!-- Success Feedback Overlay -->
     <div id="successOverlay" class="fixed inset-0 bg-white/90 backdrop-blur-sm hidden flex-col items-center justify-center p-6 text-center z-50">
         <div class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-3xl mb-4 shadow-inner">
             <i class="fa-solid fa-check"></i>
@@ -157,10 +169,35 @@
     </div>
 
     <script>
+        // --- ส่วนเชื่อมต่อ LINE LIFF ---
+        const LIFF_ID = "2009891931-ftGaftKk"; 
+
+        async function initializeLiff() {
+            try {
+                await liff.init({ liffId: LIFF_ID });
+                if (!liff.isLoggedIn()) {
+                    liff.login();
+                } else {
+                    document.getElementById('loading').classList.add('hidden');
+                }
+            } catch (err) {
+                console.error("LIFF Initialization failed", err);
+                // แสดงข้อความ Error บนหน้าจอหากเชื่อมต่อไม่ได้
+                document.getElementById('loading').innerHTML = `
+                    <div class="text-red-500 p-6">
+                        <i class="fa-solid fa-circle-exclamation text-4xl mb-2"></i>
+                        <p>เชื่อมต่อ LINE ไม่สำเร็จ: ${err.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        // เริ่มต้นระบบเมื่อโหลดหน้าเสร็จ
+        window.onload = initializeLiff;
+
         function goStep(step) {
             document.querySelectorAll('[id^="step"]').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.step-dot').forEach(el => el.classList.remove('active'));
-            
             document.getElementById('step' + step).classList.remove('hidden');
             document.getElementById('dot' + step).classList.add('active');
         }
@@ -171,18 +208,59 @@
             else section.classList.add('hidden');
         }
 
-        function sendToLine() {
-            // ในการใช้งานจริง จะเรียกใช้ LIFF SDK
-            // liff.sendMessages([{ type: 'text', text: 'ข้อมูลสรุปจากลูกค้า...' }])
-            // แล้วตามด้วย liff.closeWindow()
-            
-            document.getElementById('successOverlay').classList.remove('hidden');
-            document.getElementById('successOverlay').classList.add('flex');
-            
-            setTimeout(() => {
-                // liff.closeWindow(); // ปิดหน้าต่าง LIFF หลังส่งข้อมูล
-                console.log("LIFF window would close now.");
-            }, 3000);
+        async function sendToLine() {
+            const workplace = document.getElementById('workplace').value;
+            const adults = document.getElementById('adults').value;
+            const children = document.getElementById('children').value;
+            const ageRange = document.getElementById('ageRange').value;
+            const hasCat = document.querySelector('input[name="hasCat"]:checked').value;
+            const vaccine = hasCat === 'มี' ? document.querySelector('input[name="vaccine"]:checked').value : 'N/A';
+            const moveInDate = document.getElementById('moveInDate').value;
+
+            if (!workplace || !adults || !ageRange || !moveInDate) {
+                alert("รบกวนกรอกข้อมูลให้ครบถ้วนนะคะ 😊");
+                return;
+            }
+
+            const summaryText = 
+`🏠 สนใจเช่า: มีทอง เรสซิเด้นท์
+📍 ที่ทำงาน: ${workplace}
+👥 ผู้พัก: ผู้ใหญ่ ${adults} ท่าน / เด็กเล็ก: ${children}
+🎂 ช่วงอายุ: ${ageRange}
+🐾 น้องแมว: ${hasCat === 'มี' ? 'มี (วัคซีน' + vaccine + ')' : 'ไม่มีค่ะ'}
+📅 แผนย้ายเข้า: ${moveInDate}
+------------------
+(ส่งผ่านระบบลงทะเบียนอัตโนมัติ)`;
+
+            try {
+                const btn = document.getElementById('btnSubmit');
+                btn.disabled = true;
+                btn.innerText = "กำลังส่งข้อมูล...";
+
+                // ส่งข้อความเข้าแชท
+                if (liff.isInClient()) {
+                    await liff.sendMessages([{
+                        type: 'text',
+                        text: summaryText
+                    }]);
+                    
+                    document.getElementById('successOverlay').classList.remove('hidden');
+                    document.getElementById('successOverlay').classList.add('flex');
+                    
+                    setTimeout(() => {
+                        liff.closeWindow();
+                    }, 2500);
+                } else {
+                    alert("กรุณาเปิดลิงก์นี้ในแอป LINE เพื่อส่งข้อมูลนะคะ\n\nข้อมูลของคุณ:\n" + summaryText);
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fa-brands fa-line text-xl"></i> ส่งข้อมูลให้แอดมิน';
+                }
+
+            } catch (err) {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-brands fa-line text-xl"></i> ส่งข้อมูลให้แอดมิน';
+                alert("เกิดข้อผิดพลาด: " + err.message);
+            }
         }
     </script>
 </body>
