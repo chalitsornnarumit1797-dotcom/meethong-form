@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>สอบถามห้องพัก - มีทอง เรสซิเด้นท์</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap');
+        body { font-family: 'Kanit', sans-serif; background-color: #f8fafc; color: #1e293b; }
+        .step-dot { width: 10px; height: 10px; border-radius: 50%; background-color: #e2e8f0; transition: all 0.3s; }
+        .step-dot.active { width: 30px; background-color: #2563eb; border-radius: 20px; }
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        input[type="radio"]:checked + label { border-color: #2563eb; background-color: #eff6ff; color: #2563eb; }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <div class="max-w-md w-full bg-white rounded-[2.5rem] shadow-2xl overflow-hidden border border-gray-100 flex flex-col">
+        <!-- Header -->
+        <div class="bg-blue-600 p-8 text-white text-center relative">
+            <div class="absolute top-4 right-6 opacity-10 text-5xl"><i class="fa-solid fa-cat"></i></div>
+            <h1 class="text-2xl font-bold mb-1">Mee Thong Residence</h1>
+            <p class="text-blue-100 font-light text-sm">ยินดีต้อนรับสู่ มีทอง เรสซิเด้นท์ ค่ะ</p>
+        </div>
+
+        <div class="p-8 flex-1">
+            <!-- Progress Bar -->
+            <div class="flex justify-center gap-2 mb-8">
+                <div id="dot1" class="step-dot active"></div>
+                <div id="dot2" class="step-dot"></div>
+                <div id="dot3" class="step-dot"></div>
+                <div id="dot4" class="step-dot"></div>
+            </div>
+
+            <form id="liffForm" class="space-y-6">
+                
+                <!-- Step 1: Workplace -->
+                <div id="step1" class="fade-in space-y-6">
+                    <div class="text-center space-y-2">
+                        <h2 class="text-lg font-semibold">แอดมินขอแนะนำห้องพักที่ตรงใจ</h2>
+                        <p class="text-gray-400 text-sm">รบกวนขอข้อมูลเพื่อดูความสะดวกในการเดินทางค่ะ</p>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-sm font-medium text-gray-600 ml-1">1. สถานที่ทำงานของลูกค้าอยู่บริเวณไหนคะ?</label>
+                        <textarea name="workplace" rows="3" placeholder="ระบุชื่อบริษัท หรือ ย่านที่ทำงาน..." class="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:border-blue-500 transition"></textarea>
+                    </div>
+                    <button type="button" onclick="goStep(2)" class="w-full py-4 bg-blue-600 text-white rounded-2xl font-bold shadow-lg hover:bg-blue-700 active:scale-95 transition">ถัดไป</button>
+                </div>
+
+                <!-- Step 2: Occupants & Age -->
+                <div id="step2" class="hidden fade-in space-y-6">
+                    <div class="text-center">
+                        <h2 class="text-lg font-semibold mb-1">ข้อมูลผู้พักอาศัย</h2>
+                        <p class="text-gray-400 text-sm">เพื่อเลือกชั้นและขนาดห้องที่เหมาะสมค่ะ</p>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="text-xs font-bold text-gray-400 uppercase ml-1">จำนวนผู้ใหญ่</label>
+                                <input type="number" name="adults" placeholder="เช่น 1 หรือ 2" class="w-full p-4 bg-gray-50 border rounded-2xl outline-none focus:border-blue-500">
+                            </div>
+                            <div>
+                                <label class="text-xs font-bold text-gray-400 uppercase ml-1">มีเด็กเล็กไหมคะ</label>
+                                <select name="children" class="w-full p-4 bg-gray-50 border rounded-2xl outline-none focus:border-blue-500">
+                                    <option value="ไม่มี">ไม่มีค่ะ</option>
+                                    <option value="มี">มีค่ะ</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-gray-400 uppercase ml-1">ช่วงอายุผู้พัก</label>
+                            <input type="text" name="ageRange" placeholder="เช่น 25 - 30 ปี" class="w-full p-4 bg-gray-50 border rounded-2xl outline-none focus:border-blue-500">
+                        </div>
+                    </div>
+                    <div class="flex gap-3">
+                        <button type="button" onclick="goStep(1)" class="flex-1 py-4 text-gray-400 font-bold">ย้อนกลับ</button>
+                        <button type="button" onclick="goStep(3)" class="flex-[2] py-4 bg-blue-600 text-white rounded-2xl font-bold shadow-lg">ถัดไป</button>
+                    </div>
+                </div>
+
+                <!-- Step 3: Cats -->
+                <div id="step3" class="hidden fade-in space-y-6">
+                    <div class="text-center">
+                        <h2 class="text-lg font-semibold mb-1">มีน้องแมวไหมคะ? 🐾</h2>
+                        <p class="text-gray-400 text-sm">เรารับเฉพาะน้องแมวที่ได้รับวัคซีนครบถ้วนค่ะ</p>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex gap-4">
+                            <div class="flex-1">
+                                <input type="radio" id="cat_no" name="hasCat" value="ไม่มี" class="hidden" checked onclick="toggleVaccine(false)">
+                                <label for="cat_no" class="flex flex-col items-center justify-center p-4 border-2 rounded-2xl cursor-pointer transition">
+                                    <i class="fa-solid fa-circle-xmark mb-2 text-xl"></i>
+                                    <span class="text-sm font-bold">ไม่มี</span>
+                                </label>
+                            </div>
+                            <div class="flex-1">
+                                <input type="radio" id="cat_yes" name="hasCat" value="มี" class="hidden" onclick="toggleVaccine(true)">
+                                <label for="cat_yes" class="flex flex-col items-center justify-center p-4 border-2 rounded-2xl cursor-pointer transition">
+                                    <i class="fa-solid fa-cat mb-2 text-xl"></i>
+                                    <span class="text-sm font-bold">มีน้องแมว</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div id="vaccineSection" class="hidden space-y-3 bg-blue-50 p-4 rounded-2xl border border-blue-100">
+                            <label class="text-xs font-bold text-blue-600 uppercase">น้องได้รับวัคซีนครบถ้วนแล้วใช่ไหมคะ?</label>
+                            <div class="flex gap-4">
+                                <label class="flex items-center gap-2 text-sm"><input type="radio" name="vaccine" value="ครบ"> ครบแล้วค่ะ</label>
+                                <label class="flex items-center gap-2 text-sm"><input type="radio" name="vaccine" value="ยังไม่ครบ"> ยังไม่ครบค่ะ</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex gap-3">
+                        <button type="button" onclick="goStep(2)" class="flex-1 py-4 text-gray-400 font-bold">ย้อนกลับ</button>
+                        <button type="button" onclick="goStep(4)" class="flex-[2] py-4 bg-blue-600 text-white rounded-2xl font-bold shadow-lg">ถัดไป</button>
+                    </div>
+                </div>
+
+                <!-- Step 4: Move-in & Note -->
+                <div id="step4" class="hidden fade-in space-y-6">
+                    <div class="text-center">
+                        <h2 class="text-lg font-semibold mb-1">วันเข้าพักและข้อมูลเพิ่มเติม</h2>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="text-xs font-bold text-gray-400 uppercase ml-1">วางแผนจะย้ายเข้าช่วงวันไหนคะ?</label>
+                            <input type="date" name="moveInDate" class="w-full p-4 bg-gray-50 border rounded-2xl outline-none focus:border-blue-500">
+                        </div>
+                        <div class="bg-red-50 p-4 rounded-2xl border border-red-100">
+                            <p class="text-xs text-red-600 leading-relaxed">
+                                <i class="fa-solid fa-circle-exclamation mr-1"></i>
+                                <b>หมายเหตุ:</b> ที่พักของเรา <u>ไม่มีที่จอดรถยนต์นะคะ</u> (มีเฉพาะพื้นที่สำหรับจอดรถจักรยานยนต์ค่ะ)
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-3">
+                        <button type="button" onclick="sendToLine()" class="w-full py-4 bg-green-600 text-white rounded-2xl font-bold shadow-lg flex items-center justify-center gap-2 active:scale-95 transition">
+                            <i class="fa-brands fa-line text-xl"></i> ส่งข้อมูลให้แอดมิน
+                        </button>
+                        <button type="button" onclick="goStep(3)" class="w-full py-2 text-gray-400 text-sm">ย้อนกลับ</button>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <!-- Success Feedback Overlay (Hidden by default) -->
+    <div id="successOverlay" class="fixed inset-0 bg-white/90 backdrop-blur-sm hidden flex-col items-center justify-center p-6 text-center z-50">
+        <div class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-3xl mb-4 shadow-inner">
+            <i class="fa-solid fa-check"></i>
+        </div>
+        <h2 class="text-xl font-bold text-gray-800 mb-2">ส่งข้อมูลเรียบร้อยแล้วค่ะ!</h2>
+        <p class="text-gray-500 text-sm">แอดมินจะรีบตรวจสอบห้องที่เหมาะสมที่สุด<br>และแจ้งกลับผ่านแชททันทีค่ะ ขอบคุณค่ะ</p>
+    </div>
+
+    <script>
+        function goStep(step) {
+            document.querySelectorAll('[id^="step"]').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.step-dot').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById('step' + step).classList.remove('hidden');
+            document.getElementById('dot' + step).classList.add('active');
+        }
+
+        function toggleVaccine(show) {
+            const section = document.getElementById('vaccineSection');
+            if(show) section.classList.remove('hidden');
+            else section.classList.add('hidden');
+        }
+
+        function sendToLine() {
+            // ในการใช้งานจริง จะเรียกใช้ LIFF SDK
+            // liff.sendMessages([{ type: 'text', text: 'ข้อมูลสรุปจากลูกค้า...' }])
+            // แล้วตามด้วย liff.closeWindow()
+            
+            document.getElementById('successOverlay').classList.remove('hidden');
+            document.getElementById('successOverlay').classList.add('flex');
+            
+            setTimeout(() => {
+                // liff.closeWindow(); // ปิดหน้าต่าง LIFF หลังส่งข้อมูล
+                console.log("LIFF window would close now.");
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
