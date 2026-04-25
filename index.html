@@ -93,34 +93,49 @@
                 <div id="step3" class="hidden fade-in space-y-6">
                     <div class="text-center">
                         <h2 class="text-lg font-semibold mb-1">มีน้องแมวไหมคะ? 🐾</h2>
-                        <p class="text-gray-400 text-sm">เรารับเฉพาะน้องแมวที่ได้รับวัคซีนครบถ้วนค่ะ</p>
+                        <p class="text-gray-400 text-sm">ทางหอพักอนุญาตให้เลี้ยงได้ไม่เกิน 2 ตัวค่ะ</p>
                     </div>
                     <div class="space-y-4">
                         <div class="flex gap-4">
                             <div class="flex-1">
-                                <input type="radio" id="cat_no" name="hasCat" value="ไม่มี" class="hidden" checked onclick="toggleVaccine(false)">
+                                <input type="radio" id="cat_no" name="hasCat" value="ไม่มี" class="hidden" checked onclick="toggleCatDetail(false)">
                                 <label for="cat_no" class="flex flex-col items-center justify-center p-4 border-2 rounded-2xl cursor-pointer transition">
                                     <i class="fa-solid fa-circle-xmark mb-2 text-xl"></i>
                                     <span class="text-sm font-bold">ไม่มี</span>
                                 </label>
                             </div>
                             <div class="flex-1">
-                                <input type="radio" id="cat_yes" name="hasCat" value="มี" class="hidden" onclick="toggleVaccine(true)">
+                                <input type="radio" id="cat_yes" name="hasCat" value="มี" class="hidden" onclick="toggleCatDetail(true)">
                                 <label for="cat_yes" class="flex flex-col items-center justify-center p-4 border-2 rounded-2xl cursor-pointer transition">
                                     <i class="fa-solid fa-cat mb-2 text-xl"></i>
                                     <span class="text-sm font-bold">มีน้องแมว</span>
                                 </label>
                             </div>
                         </div>
-                        <div id="vaccineSection" class="hidden space-y-3 bg-blue-50 p-4 rounded-2xl border border-blue-100">
-                            <label class="text-xs font-bold text-blue-600 uppercase">น้องได้รับวัคซีนครบถ้วนแล้วใช่ไหมคะ?</label>
-                            <div class="flex gap-4">
-                                <label class="flex items-center gap-2 text-sm">
-                                    <input type="radio" name="vaccine" value="ครบแล้วค่ะ" checked> ครบแล้วค่ะ
-                                </label>
-                                <label class="flex items-center gap-2 text-sm">
-                                    <input type="radio" name="vaccine" value="ยังไม่ครบค่ะ"> ยังไม่ครบค่ะ
-                                </label>
+
+                        <!-- รายละเอียดเพิ่มเติมสำหรับน้องแมว -->
+                        <div id="catDetailSection" class="hidden space-y-4 bg-blue-50 p-5 rounded-2xl border border-blue-100">
+                            <div>
+                                <label class="text-xs font-bold text-blue-600 uppercase">เลี้ยงกี่ตัวคะ?</label>
+                                <select id="catCount" class="w-full mt-1 p-2 rounded-lg border-none outline-none">
+                                    <option value="1 ตัว">1 ตัว</option>
+                                    <option value="2 ตัว">2 ตัว</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="text-xs font-bold text-blue-600 uppercase">น้องแมวชื่ออะไรบ้างคะ?</label>
+                                <input type="text" id="catNames" placeholder="เช่น น้องมีบุญ, น้องถุงทอง" class="w-full mt-1 p-2 rounded-lg border-none outline-none">
+                            </div>
+                            <div>
+                                <label class="text-xs font-bold text-blue-600 uppercase">น้องได้รับวัคซีนครบถ้วนแล้วใช่ไหมคะ?</label>
+                                <div class="flex gap-4 mt-1">
+                                    <label class="flex items-center gap-2 text-sm">
+                                        <input type="radio" name="vaccine" value="ครบแล้วค่ะ" checked> ครบแล้วค่ะ
+                                    </label>
+                                    <label class="flex items-center gap-2 text-sm">
+                                        <input type="radio" name="vaccine" value="ยังไม่ครบค่ะ"> ยังไม่ครบค่ะ
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -182,7 +197,6 @@
                 }
             } catch (err) {
                 console.error("LIFF Initialization failed", err);
-                // แสดงข้อความ Error บนหน้าจอหากเชื่อมต่อไม่ได้
                 document.getElementById('loading').innerHTML = `
                     <div class="text-red-500 p-6">
                         <i class="fa-solid fa-circle-exclamation text-4xl mb-2"></i>
@@ -192,7 +206,6 @@
             }
         }
 
-        // เริ่มต้นระบบเมื่อโหลดหน้าเสร็จ
         window.onload = initializeLiff;
 
         function goStep(step) {
@@ -202,8 +215,8 @@
             document.getElementById('dot' + step).classList.add('active');
         }
 
-        function toggleVaccine(show) {
-            const section = document.getElementById('vaccineSection');
+        function toggleCatDetail(show) {
+            const section = document.getElementById('catDetailSection');
             if(show) section.classList.remove('hidden');
             else section.classList.add('hidden');
         }
@@ -214,7 +227,6 @@
             const children = document.getElementById('children').value;
             const ageRange = document.getElementById('ageRange').value;
             const hasCat = document.querySelector('input[name="hasCat"]:checked').value;
-            const vaccine = hasCat === 'มี' ? document.querySelector('input[name="vaccine"]:checked').value : 'N/A';
             const moveInDate = document.getElementById('moveInDate').value;
 
             if (!workplace || !adults || !ageRange || !moveInDate) {
@@ -222,12 +234,20 @@
                 return;
             }
 
+            let catInfo = "🐾 น้องแมว: ไม่มีค่ะ";
+            if (hasCat === 'มี') {
+                const count = document.getElementById('catCount').value;
+                const names = document.getElementById('catNames').value;
+                const vaccine = document.querySelector('input[name="vaccine"]:checked').value;
+                catInfo = `🐾 น้องแมว: มี (${count})\n📛 ชื่อ: ${names || '-'}\n💉 วัคซีน: ${vaccine}`;
+            }
+
             const summaryText = 
 `🏠 สนใจเช่า: มีทอง เรสซิเด้นท์
 📍 ที่ทำงาน: ${workplace}
 👥 ผู้พัก: ผู้ใหญ่ ${adults} ท่าน / เด็กเล็ก: ${children}
 🎂 ช่วงอายุ: ${ageRange}
-🐾 น้องแมว: ${hasCat === 'มี' ? 'มี (วัคซีน' + vaccine + ')' : 'ไม่มีค่ะ'}
+${catInfo}
 📅 แผนย้ายเข้า: ${moveInDate}
 ------------------
 (ส่งผ่านระบบลงทะเบียนอัตโนมัติ)`;
@@ -237,7 +257,6 @@
                 btn.disabled = true;
                 btn.innerText = "กำลังส่งข้อมูล...";
 
-                // ส่งข้อความเข้าแชท
                 if (liff.isInClient()) {
                     await liff.sendMessages([{
                         type: 'text',
